@@ -8,8 +8,7 @@ const toLogin = async () => {
 };
 
 const axiosOpts = {
-  baseURL:
-    import.meta.env.MODE === 'development' ? '/api' : <string>import.meta.env.VITE_APP_BASE_API,
+  baseURL: 'http://127.0.0.1:3001',
   timeout: 1000 * 10,
 };
 

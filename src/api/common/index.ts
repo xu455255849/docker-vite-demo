@@ -1,5 +1,5 @@
 import { http } from '../http-server';
 
-export function getPolicyTokenCos(payload: any) {
-  return http.get<any>('/cos/get-policy-sign', payload);
+export function getBaseApi(payload: any) {
+  return http.get<any>('/base', payload);
 }

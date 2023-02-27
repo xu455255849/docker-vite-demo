@@ -3,15 +3,17 @@
 </template>
 
 <script setup lang="ts">
-import {computed, onMounted} from 'vue';
+import { onMounted} from 'vue';
+import {getBaseApi} from "../api/common";
 
 onMounted(() => {
-
+  getData();
 })
 
 
-const getData = () => {
-
+const getData = async () => {
+  const res = await getBaseApi();
+  console.log(res, 11)
 }
 
 </script>
