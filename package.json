@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
-    "serve": "node server/run.mjs"
+    "serve": "node server/serve.mjs"
   },
   "dependencies": {
     "@fastify/cors": "^8.2.0",

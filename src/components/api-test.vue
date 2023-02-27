@@ -12,7 +12,7 @@ onMounted(() => {
 
 
 const getData = async () => {
-  const res = await getBaseApi();
+  const res = await getBaseApi({});
   console.log(res, 11)
 }
 
