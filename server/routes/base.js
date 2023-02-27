@@ -1,4 +1,4 @@
-module .exports = async function routes(fastify) {
+module.exports = async function routes(fastify) {
   fastify.get('/base', async (req, res) => {
     res.send({
       code: 200,
