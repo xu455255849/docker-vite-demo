@@ -23,6 +23,6 @@ export function createCat(payload: any) {
   return http.post<{ id: string }>(prefix, payload);
 }
 
-export function deleteCat(payload: any) {
-  return http.post<any>(prefix, payload);
+export function deleteCat(payload: { id: string }) {
+  return http.delete<{ id: string }>(prefix, payload);
 }
