@@ -2,7 +2,7 @@ import { http } from '../http-server';
 const prefix = '/cats'
 
 export function getCatsAll(payload: any) {
-  return http.get<any>(prefix, payload);
+  return http.get<{ list: [], total: number }>(prefix, payload);
 }
 
 export function getCatsOne(payload: any) {

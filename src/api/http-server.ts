@@ -23,7 +23,6 @@ export const http = new HttpServer(axiosOpts, {
   // debugger: true,
   handleRequest,
   errorHandle: async response => {
-    console.log(response, 11)
     switch (response.code) {
       case 400:
         message.error('错误请求，请检查参数！');

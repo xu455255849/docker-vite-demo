@@ -35,14 +35,13 @@ const getData = async () => {
     pageSize: 20
   })
 
-  listData.value = data;
+  listData.value = data.list;
 }
 
 const handleAdd = async () => {
   await createCat({
     name: `xyz.${Math.random() * 10}`,
     age: 20,
-    dirty: true,
   })
   await getData();
 }
