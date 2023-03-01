@@ -1,16 +1,26 @@
 import { http } from '../http-server';
 const prefix = '/cats'
 
-export function getCatsAll(payload: any) {
-  return http.get<{ list: [], total: number }>(prefix, payload);
+export interface ICats {
+  id: string,
+  name: string;
+  age: number;
 }
 
-export function getCatsOne(payload: any) {
-  return http.post<any>(prefix, payload);
+export function getCatsAll(payload: { page: number; pageSize: number }) {
+  return http.get<{ list: ICats[], total: number }>(prefix, payload);
+}
+
+export function getCatsOne(payload: { id: string }) {
+  return http.get<ICats>(prefix + '/info', payload);
+}
+
+export function updateCat(payload: ICats) {
+  return http.put<{ id: string }>(prefix, payload);
 }
 
 export function createCat(payload: any) {
-  return http.post<any>(prefix, payload);
+  return http.post<{ id: string }>(prefix, payload);
 }
 
 export function deleteCat(payload: any) {

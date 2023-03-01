@@ -5,12 +5,13 @@
     </div>
     <a-table :dataSource="listData" :columns="columns" />
 
+    {{ curInfo }}
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup lang="tsx">
 import { onMounted, ref} from 'vue';
-import {createCat, getCatsAll} from "../api/common";
+import {createCat, getCatsAll, getCatsOne, ICats} from "../api/common";
 
 onMounted(() => {
   getData();
@@ -20,12 +21,23 @@ const columns = [
   {
     title: '姓名',
     dataIndex: 'name',
-    key: 'name',
+    key: '姓名',
   },
   {
     title: '年龄',
     dataIndex: 'age',
-    key: 'age',
+    key: '年龄',
+  },
+  {
+    title: '操作',
+    key: '操作',
+    customRender: ({ record }: { record: ICats }) => {
+      return (
+          <div>
+            <a-button onclick={() => handleCheck(record.id)}>查看</a-button>
+          </div>
+      )
+    },
   }
 ]
 const listData = ref([]);
@@ -44,6 +56,12 @@ const handleAdd = async () => {
     age: 20,
   })
   await getData();
+}
+
+const curInfo = ref();
+const handleCheck = async (id: string) => {
+  const { data } = await getCatsOne({ id });
+  curInfo.value = data;
 }
 
 </script>
