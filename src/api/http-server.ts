@@ -23,7 +23,11 @@ export const http = new HttpServer(axiosOpts, {
   // debugger: true,
   handleRequest,
   errorHandle: async response => {
+    console.log(response, 11)
     switch (response.code) {
+      case 400:
+        message.error('错误请求，请检查参数！');
+        break;
       case 401:
         message.error('您未登录，或者登录已经超时，请先登录！');
         await toLogin();
