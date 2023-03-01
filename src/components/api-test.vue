@@ -3,17 +3,20 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted} from 'vue';
-import {getBaseApi} from "../api/common";
+import { onMounted, ref} from 'vue';
+import {getCatsAll} from "../api/common";
 
 onMounted(() => {
   getData();
 })
 
-
+const listData = ref([]);
 const getData = async () => {
-  const res = await getBaseApi({});
+  const res = await getCatsAll({
+    page: 1,
+  })
   console.log(res, 11)
+  listData.value = res;
 }
 
 </script>
