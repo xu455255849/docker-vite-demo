@@ -7,6 +7,15 @@ export interface ICats {
   age: number;
 }
 
+export function exportCsv() {
+  return http.get(prefix + '/export', {}, {
+    headers: {
+      'x-with-download': 'true'
+    },
+    responseType: 'blob'
+  })
+}
+
 export function getCatsAll(payload: { page: number; pageSize: number }) {
   return http.get<{ list: ICats[], total: number }>(prefix, payload);
 }
