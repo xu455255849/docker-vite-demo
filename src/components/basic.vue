@@ -29,5 +29,3 @@ const paintPath = () => {
 }
 
 </script>
-
-<style lang="scss"></style>
