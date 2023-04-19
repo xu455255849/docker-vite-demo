@@ -1,6 +1,6 @@
 <template>
   <div style="margin-bottom: 20px">
-    <video height="360" width="500" id="webcam" style="display: none"></video>
+    <video height="360" width="500" id="webcam" ></video>
     <button @click="captureCamera">摄像头采集</button>
   </div>
   <div style="display: flex; justify-content: center">
@@ -13,7 +13,7 @@ import { onMounted } from 'vue';
 import { fabric } from 'fabric';
 
 let canvas: unknown;
-let videoEl: unknown;
+let videoEl: HTMLVideoElement;
 let fabVideoObj: unknown
 
 const sizeOpts = {
@@ -34,8 +34,8 @@ const initCanvas = () => {
     height: sizeOpts.Basic.h,
   });
   fabVideoObj = new fabric.Image(videoEl, {
-    width: sizeOpts.Basic.w,
-    height: sizeOpts.Basic.h,
+    // width: sizeOpts.Basic.w,
+    // height: sizeOpts.Basic.h,
     left: 0,
     top: 0,
     angle: 0,
