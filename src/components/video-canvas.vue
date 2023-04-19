@@ -12,7 +12,7 @@
 <script setup lang="ts">
 import { onMounted,} from 'vue';
 
-let videoEl: any;
+let videoEl: HTMLVideoElement;
 let canvasEl: HTMLCanvasElement;
 let ctx: CanvasRenderingContext2D;
 
