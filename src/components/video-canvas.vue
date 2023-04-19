@@ -5,7 +5,7 @@
     <button @click="captureCamera">摄像头采集</button>
   </div>
   <div>
-    <canvas id="canvas" width="1200" height="720" />
+    <canvas id="canvas" width="720" height="480" />
   </div>
 </template>
 
@@ -28,7 +28,7 @@ onMounted(() => {
 let videoStream: MediaStream;
 const captureCamera = () => {
   navigator.mediaDevices.getUserMedia({ audio: false, video: true }).then(stream => {
-    videoStream = stream;
+    videoEl.srcObject = stream;
   }).catch(error => {
     console.log('navigator.MediaDevices.getUserMedia error: ', error.message, error.name);
   })

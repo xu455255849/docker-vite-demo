@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <video id="video" src="" />
+  <div style="margin-bottom: 20px">
+    <video height="360" width="500" id="webcam" style="display: none"></video>
     <button @click="captureCamera">摄像头采集</button>
   </div>
   <div style="display: flex; justify-content: center">
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas" style="border:1px solid #ccc"></canvas>
   </div>
 </template>
 
@@ -13,15 +13,8 @@ import { onMounted } from 'vue';
 import { fabric } from 'fabric';
 
 let canvas: unknown;
-const videoEl = new fabric.Image(document.getElementById('video'), {
-  left: 200,
-  top: 300,
-  angle: -15,
-  originX: 'center',
-  originY: 'center',
-  objectCaching: false,
-});
-
+let videoEl: unknown;
+let fabVideoObj: unknown
 
 const sizeOpts = {
   Basic: {
@@ -31,6 +24,7 @@ const sizeOpts = {
 }
 
 onMounted(() => {
+  videoEl = document.getElementById('webcam');
   initCanvas()
 })
 
@@ -39,17 +33,25 @@ const initCanvas = () => {
     width: sizeOpts.Basic.w,
     height: sizeOpts.Basic.h,
   });
-
+  fabVideoObj = new fabric.Image(videoEl, {
+    width: sizeOpts.Basic.w,
+    height: sizeOpts.Basic.h,
+    left: 0,
+    top: 0,
+    angle: 0,
+    originX: 'left',
+    originY: 'top',
+    objectCaching: false,
+  })
 }
 
 const captureCamera = () => {
   navigator.mediaDevices.getUserMedia({ audio: false, video: true }).then(stream => {
     // console.log(stream, 111)
-    // videoStream = stream;
     videoEl.srcObject = stream
-    canvas.add(videoEl)
-    videoEl.moveTo(0); // move webcam element to back of zIndex stack
-    videoEl.getElement().play();
+    canvas.add(fabVideoObj)
+    fabVideoObj.moveTo(0); // move webcam element to back of zIndex stack
+    fabVideoObj.getElement().play();
   }).catch(error => {
     console.log('navigator.MediaDevices.getUserMedia error: ', error.message, error.name);
   })
