@@ -42,6 +42,8 @@ const initCanvas = () => {
     originX: 'left',
     originY: 'top',
     objectCaching: false,
+    transparentCorners: false,
+
   })
 }
 
