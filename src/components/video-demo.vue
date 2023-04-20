@@ -1,7 +1,15 @@
 <template>
   <div style="margin-bottom: 20px">
-    <video height="480" width="720" id="webcam" ></video>
+    <video height="480" width="720" id="webcam" style="display: none"></video>
     <button @click="captureCamera">摄像头采集</button>
+    <div>
+      <a-button @click="addLine">打开陀螺仪</a-button>
+      <a-select v-model:value="value1" @change="handleLineChange">
+        <a-select-option :value="0">0</a-select-option>
+        <a-select-option :value="30">30</a-select-option>
+        <a-select-option :value="60">60</a-select-option>
+      </a-select>
+    </div>
   </div>
   <div style="display: flex; justify-content: center">
     <canvas id="canvas" style="border:1px solid #ccc"></canvas>
@@ -9,12 +17,13 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, ref } from 'vue';
 import { fabric } from 'fabric';
 
 let canvas: fabric.Canvas;
 let videoEl: HTMLVideoElement;
-let fabVideoObj: fabric.Image
+let fabVideoObj: fabric.Image;
+let horizontalLine: fabric.Line;
 
 const sizeOpts = {
   Basic: {
@@ -51,18 +60,22 @@ const initCanvas = () => {
     originX: 'left',
     originY: 'top',
     objectCaching: false,
-    transparentCorners: true,
-
+    hasControls: false,
+    lockMovementX: true,
+    lockMovementY: true,
+    hoverCursor: 'default',
+    selectable: false
   })
 }
 
-const captureCamera = () => {
-  navigator.mediaDevices.getUserMedia({ audio: false, video: {
-      deviceId: {
-      exact: 'c1303730b8b9191e85026b6ef876bf4497cabc89c396e0391c68041800f76c2a',
-      }
+const opts = {
+  deviceId: {
+    exact: 'c1303730b8b9191e85026b6ef876bf4497cabc89c396e0391c68041800f76c2a',
   }
-  }).then(stream => {
+}
+
+const captureCamera = () => {
+  navigator.mediaDevices.getUserMedia({ audio: false, video: true }).then(stream => {
     // console.log(stream, 111)
     videoEl.srcObject = stream
     canvas.add(fabVideoObj)
@@ -76,6 +89,28 @@ const captureCamera = () => {
     canvas.renderAll();
     fabric.util.requestAnimFrame(render);
   }))
+}
+
+const value1 = ref(0)
+const addLine = () => {
+  horizontalLine = new fabric.Line([
+    0,
+    sizeOpts.Basic.h / 2,
+    sizeOpts.Basic.w,
+    sizeOpts.Basic.h / 2,
+  ], {
+    stroke: '#1374F6',
+    selectable: false,
+    type: 'line',
+    angle: 0,
+    originX: 'center',
+    originY: 'center',
+    centeredRotation: true
+  })
+  canvas.add(horizontalLine)
+}
+const handleLineChange = (val) => {
+  horizontalLine.set({ angle: val })
 }
 
 
