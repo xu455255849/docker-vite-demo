@@ -5,6 +5,7 @@
     <div>
       <a-button @click="addLine">打开陀螺仪</a-button>
       <a-select v-model:value="value1" @change="handleLineChange">
+        <a-select-option :value="-15">-15</a-select-option>
         <a-select-option :value="0">0</a-select-option>
         <a-select-option :value="30">30</a-select-option>
         <a-select-option :value="60">60</a-select-option>
