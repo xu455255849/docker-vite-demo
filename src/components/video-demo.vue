@@ -1,6 +1,6 @@
 <template>
   <div style="margin-bottom: 20px">
-    <video height="360" width="500" id="webcam" ></video>
+    <video height="480" width="720" id="webcam" ></video>
     <button @click="captureCamera">摄像头采集</button>
   </div>
   <div style="display: flex; justify-content: center">
@@ -12,9 +12,9 @@
 import { onMounted } from 'vue';
 import { fabric } from 'fabric';
 
-let canvas: unknown;
+let canvas: fabric.Canvas;
 let videoEl: HTMLVideoElement;
-let fabVideoObj: unknown
+let fabVideoObj: fabric.Image
 
 const sizeOpts = {
   Basic: {
@@ -24,8 +24,17 @@ const sizeOpts = {
 }
 
 onMounted(() => {
-  videoEl = document.getElementById('webcam');
+  videoEl = document.getElementById('webcam') as HTMLVideoElement;
   initCanvas()
+
+ navigator.mediaDevices.enumerateDevices().then(devices => {
+   devices.forEach(function(device) {
+     console.log(device.kind + ": " + device.label +
+         " id = " + device.deviceId);
+   });
+ }).catch(function(err) {
+   console.log(err.name + ": " + err.message);
+ });
 })
 
 const initCanvas = () => {
@@ -42,13 +51,18 @@ const initCanvas = () => {
     originX: 'left',
     originY: 'top',
     objectCaching: false,
-    transparentCorners: false,
+    transparentCorners: true,
 
   })
 }
 
 const captureCamera = () => {
-  navigator.mediaDevices.getUserMedia({ audio: false, video: true }).then(stream => {
+  navigator.mediaDevices.getUserMedia({ audio: false, video: {
+      deviceId: {
+      exact: 'c1303730b8b9191e85026b6ef876bf4497cabc89c396e0391c68041800f76c2a',
+      }
+  }
+  }).then(stream => {
     // console.log(stream, 111)
     videoEl.srcObject = stream
     canvas.add(fabVideoObj)
@@ -64,15 +78,6 @@ const captureCamera = () => {
   }))
 }
 
-
-const captureStream = () => {
-  if (videoEl.paused || videoEl.ended) return;
-  ctx.drawImage(videoEl, 0, 0, 720, 480)
-  requestAnimationFrame(captureStream);
-  // const stream = videoEl.captureStream(30);
-  // const audioTrack = stream.getAudioTracks()[0];
-  // const videoTrack = stream.getVideoTracks()[0];
-}
 
 </script>
 
