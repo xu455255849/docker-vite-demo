@@ -82,6 +82,17 @@ const captureCamera = () => {
     canvas.add(fabVideoObj)
     fabVideoObj.moveTo(0); // move webcam element to back of zIndex stack
     fabVideoObj.getElement().play();
+
+
+    setTimeout(() => {
+      const frame = canvas.toCanvasElement().getContext('2d').getImageData(0, 0, 40, 40)
+
+      console.log(frame, 1231)
+      const dataPtr = Module._malloc(frame.length);
+      Module.HEAPU8.set(frame.data, dataPtr);
+      Module._process_frame(dataPtr, frame.width, frame.height);
+      Module._free(dataPtr);
+    }, 1500)
   }).catch(error => {
     console.log('navigator.MediaDevices.getUserMedia error: ', error.message, error.name);
   })
@@ -110,7 +121,7 @@ const addLine = () => {
   })
   canvas.add(horizontalLine)
 }
-const handleLineChange = (val) => {
+const handleLineChange = (val: number) => {
   horizontalLine.set({ angle: val })
 }
 
