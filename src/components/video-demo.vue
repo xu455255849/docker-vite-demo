@@ -10,6 +10,7 @@
         <a-select-option :value="30">30</a-select-option>
         <a-select-option :value="60">60</a-select-option>
       </a-select>
+      <a-button @click="handleAddArea">+ 水印</a-button>
     </div>
   </div>
   <div style="display: flex; justify-content: center">
@@ -124,6 +125,39 @@ const addLine = () => {
 const handleLineChange = (val: number) => {
   horizontalLine.set({ angle: val })
 }
+
+
+function initRect(rectStyle: any) {
+  const rect = new fabric.Rect({
+    ...rectStyle,
+    opacity: 0.5,
+    cornerSize: 6,
+    borderColor: '#0073FF',
+    cornerColor: '#0073FF',
+    borderDashArray: [5], // 边框虚线
+    transparentCorners: false, // 控制角填充色不透明
+  });
+  rect.controls = {
+    ...fabric.Rect.prototype.controls,
+    mtr: new fabric.Control({ visible: false }),
+  };
+
+  return rect;
+}
+
+const handleAddArea = () => {
+  const defaultStyle = {
+    left: 0,
+    top: 0,
+    height: 120,
+    width: 120,
+    scaleX: 1,
+    scaleY: 1,
+    fill: 'rgba(19,116,246,0.6)',
+  };
+  const rect = initRect(defaultStyle);
+  canvas.add(rect);
+};
 
 
 </script>
