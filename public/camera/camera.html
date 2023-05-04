@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script type="text/javascript" src="./process_frame.js"></script>
+  <title>Camera Control</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    video {
+      width: 100%;
+      max-width: 640px;
+      margin-bottom: 1rem;
+    }
+    label {
+      margin-right: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <video id="video" autoplay></video>
+  <canvas id="canvas"></canvas>
+  <div>
+    <label for="resolution">Resolution:</label>
+    <select id="resolution">
+      <option value="640x480">640x480</option>
+      <option value="1280x720">1280x720</option>
+      <option value="1920x1080">1920x1080</option>
+    </select>
+  </div>
+  <div>
+    <label for="frameRate">Frame rate:</label>
+    <input id="frameRate" type="range" min="1" max="60" step="1">
+  </div>
+  <div>
+    <label for="focusMode">Focus mode:</label>
+    <select id="focusMode">
+      <option value="auto">Auto</option>
+      <option value="continuous">Continuous</option>
+      <option value="manual">Manual</option>
+    </select>
+  </div>
+  
+  <script>
+    const videoElement = document.getElementById("video");
+    const resolutionSelect = document.getElementById("resolution");
+    const frameRateInput = document.getElementById("frameRate");
+    const focusModeSelect = document.getElementById("focusMode");
+    const canvasElement = document.getElementById("canvas");
+    const canvasContext = canvasElement.getContext("2d");
+    let videoTrack;
+  
+  /*  
+  const wsUrl = "ws://localhost:9000";
+    const ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => {
+      console.log(`Connected to WebSocket server at ${wsUrl}`);
+    };
+
+    ws.onerror = (error) => {
+      console.error(`WebSocket error: ${error}`);
+    };
+  */
+  
+  // 在 processFrame() 函数内部，将帧数据传递给 C++ 代码
+function processFrame() {
+  const frame = captureFrame();
+  console.log("Captured frame:", frame);
+
+  // 将帧数据传递给 C++ 代码
+  const dataPtr = Module._malloc(frame.data.length);
+  Module.HEAPU8.set(frame.data, dataPtr);
+  Module._process_frame(dataPtr, frame.width, frame.height);
+  Module._free(dataPtr);
+
+  // Call processFrame() again for the next frame using requestAnimationFrame.
+  requestAnimationFrame(processFrame);
+}
+
+
+    async function getCameraStream() {
+      try {
+        const constraints = { video: true };
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        return stream;
+      } catch (err) {
+        console.error("Error accessing camera:", err);
+      }
+    }
+
+    function captureFrame() {
+      canvasElement.width = videoElement.videoWidth;
+      canvasElement.height = videoElement.videoHeight;
+      canvasContext.drawImage(videoElement, 0, 0, videoElement.videoWidth, videoElement.videoHeight);
+      const imageData = canvasContext.getImageData(0, 0, videoElement.videoWidth, videoElement.videoHeight);
+      return imageData;
+    }
+
+    function setCameraConstraints(width, height, frameRate, focusMode) {
+      return {
+        width: { exact: width },
+        height: { exact: height },
+        frameRate: { exact: frameRate },
+        focusMode: { exact: focusMode }
+      };
+    }
+
+    async function setCameraParameters(track, constraints) {
+      try {
+        await track.applyConstraints(constraints);
+      } catch (err) {
+        console.error("Error setting camera parameters:", err);
+      }
+    }
+
+    function updateCameraParameters() {
+      const [width, height] = resolutionSelect.value.split("x").map(Number);
+      const frameRate = parseInt(frameRateInput.value, 10);
+      const focusMode = focusModeSelect.value;
+
+      const constraints = setCameraConstraints(width, height, frameRate, focusMode);
+      setCameraParameters(videoTrack, constraints);
+    }
+
+    //将帧数据传递给 C++ 代码
+    function sendFrame(frame) {
+      const dataPtr = Module._malloc(frame.data.length);
+      Module.HEAPU8.set(frame.data, dataPtr);
+      Module._process_frame(dataPtr, frame.width, frame.height);
+      Module._free(dataPtr);
+      
+      //const data = JSON.stringify({ width: frame.width, height: frame.height, data: Array.from(frame.data) });
+      //ws.send(data);
+    }
+  
+  
+
+     // 在 processFrame() 函数内部，将帧数据传递给 C++ 代码
+     function processFrame() {
+        const frame = captureFrame();
+        console.log("Captured frame:", frame);
+       
+       // Send the frame data to the WebSocket server.
+       sendFrame(frame);
+       
+        // Call processFrame() again for the next frame using requestAnimationFrame.
+        requestAnimationFrame(processFrame);
+      }
+  
+    getCameraStream().then((stream) => {
+      videoElement.srcObject = stream;
+      videoElement.play();
+      videoTrack = stream.getVideoTracks()[0];
+      
+      
+      videoElement.addEventListener("loadedmetadata", () => {
+        // Capture a frame after the video metadata is loaded.
+        const frame = captureFrame();
+        processFrame();
+        console.log("Captured frame:", frame);
+      });
+      
+      updateCameraParameters();
+      resolutionSelect.addEventListener("change", updateCameraParameters);
+      frameRateInput.addEventListener("input", updateCameraParameters);
+      focusModeSelect.addEventListener("change", updateCameraParameters);
+    });
+  </script>
+</body>
+</html>
