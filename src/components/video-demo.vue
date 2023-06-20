@@ -1,6 +1,6 @@
 <template>
   <div style="margin-bottom: 20px">
-    <video id="ffmpeg" autoplay></video>
+    <video id="ffmpeg" controls autoplay></video>
     <video width="640" height="480" id="webcam" style="display: none"></video>
     <button @click="captureCamera">摄像头采集</button>
     <a-upload :customRequest="testFF" :show-upload-list="false">
@@ -34,6 +34,7 @@ let fabVideoObj: fabric.Image;
 let horizontalLine: fabric.Line;
 
 const testFF = async ({ file }) => {
+  /// return console.log(file)
   const ffmpeg = createFFmpeg({ log: true });
   await ffmpeg.load();
   ffmpeg.FS('writeFile', 'test.avi', await fetchFile(file));
