@@ -1,6 +1,6 @@
 <template>
   <div style="margin-bottom: 20px">
-    <video width="640" height="480" id="webcam" style="display: block"></video>
+    <video width="640" height="480" id="webcam" style="display: none"></video>
     <button @click="captureCamera">摄像头采集</button>
     <div>
       <a-button @click="addLine">打开陀螺仪</a-button>
