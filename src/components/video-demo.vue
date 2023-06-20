@@ -1,7 +1,11 @@
 <template>
   <div style="margin-bottom: 20px">
+    <video id="ffmpeg" autoplay></video>
     <video width="640" height="480" id="webcam" style="display: none"></video>
     <button @click="captureCamera">摄像头采集</button>
+    <a-upload :customRequest="testFF" :show-upload-list="false">
+      <a-button>FFmpeg</a-button>
+    </a-upload>
     <div>
       <a-button @click="addLine">打开陀螺仪</a-button>
       <a-select v-model:value="value1" @change="handleLineChange">
@@ -21,11 +25,37 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { fabric } from 'fabric';
+import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
+
 
 let canvas: fabric.Canvas;
 let videoEl: HTMLVideoElement;
 let fabVideoObj: fabric.Image;
 let horizontalLine: fabric.Line;
+
+const testFF = async ({ file }) => {
+  const ffmpeg = createFFmpeg({ log: true });
+  await ffmpeg.load();
+  ffmpeg.FS('writeFile', 'test.avi', await fetchFile(file));
+  await ffmpeg.run('-i', 'test.avi', 'test.mp4');
+  // await writeFile('./test.mp4', ffmpeg.FS('readFile', 'test.mp4'));
+
+
+  const mp4ArrayBuffer = ffmpeg.FS('readFile', 'test.mp4');
+  console.log(mp4ArrayBuffer);
+// 将ArrayBuffer转换为Blob
+  const mp4Blob = new Blob([mp4ArrayBuffer], { type: 'video/mp4' });
+
+// 创建临时URL
+  const mp4Url = URL.createObjectURL(mp4Blob);
+
+// 获取video元素
+  const videoElement = document.getElementById('ffmpeg');
+
+// 设置video元素的src属性为临时URL
+  videoElement.src = mp4Url;
+
+}
 
 const sizeOpts = {
   Basic: {
