@@ -34,9 +34,10 @@ let fabVideoObj: fabric.Image;
 let horizontalLine: fabric.Line;
 
 const testFF = async ({ file }) => {
-  /// return console.log(file)
   const ffmpeg = createFFmpeg({ log: true });
   await ffmpeg.load();
+
+//  return console.log(file)
   ffmpeg.FS('writeFile', 'test.avi', await fetchFile(file));
   await ffmpeg.run('-i', 'test.avi', 'test.mp4');
   // await writeFile('./test.mp4', ffmpeg.FS('readFile', 'test.mp4'));

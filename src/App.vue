@@ -1,7 +1,18 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import HelloWorld from './components/api-test.vue'
+import { read, writeFileXLSX, utils } from 'xlsx'
+import HelloWorld from './components/video-demo.vue'
+
+const readExcel = async ({ file }) => {
+  console.log(file)
+  const buf = await file.arrayBuffer()
+  console.log(buf, 11)
+  const wb = read(buf);
+  const data = utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])
+  console.log(data, 22)
+
+}
 
 // Create WebSocket connection.
 const socket = new WebSocket('ws://192.168.123.10:12345');
@@ -35,7 +46,7 @@ socket.onerror = (error) => {
 };
 
 const  handleSendWs = () => {
-  socket.send('111');
+  socket.send(111);
 }
 
 </script>
@@ -43,6 +54,9 @@ const  handleSendWs = () => {
 <template>
   <HelloWorld />
   <button @click="handleSendWs">send msg</button>
+  <a-upload :customRequest="readExcel" :show-upload-list="false">
+    <a-button>readExcel</a-button>
+  </a-upload>
 </template>
 
 <style>
