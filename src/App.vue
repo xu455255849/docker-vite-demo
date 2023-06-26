@@ -4,7 +4,7 @@
 import HelloWorld from './components/api-test.vue'
 
 // Create WebSocket connection.
-const socket = new WebSocket('ws://localhost:3000');
+const socket = new WebSocket('ws://192.168.123.10:12345');
 
 // 连接建立时触发
 socket.onopen = () => {
@@ -19,8 +19,9 @@ socket.onopen = () => {
 
 // 接收到服务器发送的消息时触发
 socket.onmessage = (event) => {
-  const message = JSON.parse(event.data);
-  console.log('Received message from server:', message);
+  console.log(event, 111)
+  // const message = JSON.parse(event.data);
+  console.log('Received message from server:', event.data);
 };
 
 // 连接关闭时触发
@@ -33,10 +34,15 @@ socket.onerror = (error) => {
   console.error('WebSocket error:', error);
 };
 
+const  handleSendWs = () => {
+  socket.send('111');
+}
+
 </script>
 
 <template>
   <HelloWorld />
+  <button @click="handleSendWs">send msg</button>
 </template>
 
 <style>
