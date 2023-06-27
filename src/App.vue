@@ -7,11 +7,10 @@ import HelloWorld from './components/video-demo.vue'
 // const message = '/proto/command_id_enum_pb'
 
 import { CommandBody } from '../proto/command_body_struct'
+import {initCameraPayload} from "../proto/utils";
 
 
 
-
-console.log(bytes, 111)
 let data: CommandBody = {
   value: {
    oneofKind: 'strVal',
@@ -19,6 +18,7 @@ let data: CommandBody = {
   }
 }
 
+initCameraPayload(data)
 
 // let bytes = CommandBody.toBinary(data);
 // console.log(bytes, 333)
