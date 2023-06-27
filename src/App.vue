@@ -1,31 +1,13 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import { read, utils } from 'xlsx'
+
 import HelloWorld from './components/video-demo.vue'
-
-// const message = '/proto/command_id_enum_pb'
-
-import { CommandBody } from '../proto/command_body_struct'
 import {initCameraPayload} from "../proto/utils";
 import {Message} from "../proto/message";
 import {MessageType} from "../proto/message_type_enum";
 import {CommandId} from "../proto/command_id_enum";
 
-// let bytes = CommandBody.toBinary(data);
-// console.log(bytes, 333)
-// bodyInstance.serializeBinary()
-
-// deserializeBinary
-const readExcel = async ({ file }: { file: File }) => {
-  console.log(file)
-  const buf = await file.arrayBuffer()
-  console.log(buf, 11)
-  const wb = read(buf);
-  const data = utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]])
-  console.log(data, 22)
-
-}
 
 // Create WebSocket connection.
 const socket = new WebSocket('ws://192.168.123.10:12345');
@@ -85,9 +67,6 @@ const  handleSendWs = () => {
 <template>
   <HelloWorld />
   <button @click="handleSendWs">send msg</button>
-  <a-upload :customRequest="readExcel" :show-upload-list="false">
-    <a-button>readExcel</a-button>
-  </a-upload>
 </template>
 
 <style>
