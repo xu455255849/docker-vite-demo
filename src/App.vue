@@ -8,17 +8,9 @@ import HelloWorld from './components/video-demo.vue'
 
 import { CommandBody } from '../proto/command_body_struct'
 import {initCameraPayload} from "../proto/utils";
-
-
-
-let data: CommandBody = {
-  value: {
-   oneofKind: 'strVal',
-   strVal: 'qweqad'
-  }
-}
-
-initCameraPayload(data)
+import {Message} from "../proto/message";
+import {MessageType} from "../proto/message_type_enum";
+import {CommandId} from "../proto/command_id_enum";
 
 // let bytes = CommandBody.toBinary(data);
 // console.log(bytes, 333)
@@ -67,7 +59,25 @@ socket.onerror = (error) => {
 };
 
 const  handleSendWs = () => {
-  socket.send(111);
+  const msgData: Message = {
+    type: MessageType.TYPE_RESPONSE,
+    seq: 0, //
+    timeout: 0,
+    respCode: 0,
+    id: CommandId.CID_ANTI_FLICKER,
+    body: {
+      value: {
+        oneofKind: 'strVal',
+        strVal: 'qweqad'
+      }
+    }
+  }
+
+  const binaryData = initCameraPayload(msgData)
+
+  console.log(binaryData, 'binaryData')
+
+  socket.send(binaryData);
 }
 
 </script>

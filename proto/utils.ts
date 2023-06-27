@@ -1,9 +1,8 @@
-import {CommandBody} from './command_body_struct'
+import {Message} from "./message";
 
-export function initCameraPayload(data: CommandBody) {
-  const binary = CommandBody.toBinary(data)
+export function initCameraPayload(data: Message) {
+  const binary = Message.toBinary(data)
   const length = binary.length;
-
 
   const headerByte = initHeader(length)
 
@@ -19,7 +18,7 @@ export function initCameraPayload(data: CommandBody) {
   const endByte = byteConcat(bodyByte, new Uint8Array([0x5A]))
   console.log(endByte, 'endByte')
 
-  return endByte
+  return prefixByte(endByte)
 }
 
 function initHeader(length: number) {
@@ -47,4 +46,16 @@ function byteConcat(byte1: Uint8Array, byte2: Uint8Array) {
   concatenated.set(byte1, 0);
   concatenated.set(byte2, byte1.length);
   return concatenated;
+}
+
+function prefixByte(byte: Uint8Array) {
+  const prefix = new Uint8Array(8)
+  const len = byte.length
+  prefix[0] = 8
+  prefix[7] = len
+  prefix[6] = len >> 8
+  prefix[5] = len >> 16
+  prefix[4] = len >> 24
+
+  return byteConcat(prefix, byte)
 }
