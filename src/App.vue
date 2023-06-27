@@ -1,10 +1,31 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import { read, writeFileXLSX, utils } from 'xlsx'
+import { read, utils } from 'xlsx'
 import HelloWorld from './components/video-demo.vue'
 
-const readExcel = async ({ file }) => {
+// const message = '/proto/command_id_enum_pb'
+
+import { CommandBody } from '../proto/command_body_struct'
+
+
+
+
+console.log(bytes, 111)
+let data: CommandBody = {
+  value: {
+   oneofKind: 'strVal',
+   strVal: 'qweqad'
+  }
+}
+
+
+// let bytes = CommandBody.toBinary(data);
+// console.log(bytes, 333)
+// bodyInstance.serializeBinary()
+
+// deserializeBinary
+const readExcel = async ({ file }: { file: File }) => {
   console.log(file)
   const buf = await file.arrayBuffer()
   console.log(buf, 11)
